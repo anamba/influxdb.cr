@@ -37,15 +37,30 @@ module InfluxDB
     end
 
     private def parse_results(results)
+      # pp results
+
       @results = [] of Result
-      results[0]["series"].each do |series|
+      results[0]["series"].as_a.each do |series|
         name = series["name"].as_s
         columns = series["columns"]
-        series["values"].each do |value|
+        series["values"].as_a.each do |value|
           fields = Fields.new
           i = 0
-          value.each do |v|
-            fields[columns[i].as_s] = v
+          value.as_a.each do |v|
+            case
+            when val = v.as_i?
+              fields[columns[i].as_s] = val
+            when val = v.as_i64?
+              fields[columns[i].as_s] = val
+            when val = v.as_f?
+              fields[columns[i].as_s] = val
+            when val = v.as_f32?
+              fields[columns[i].as_s] = val
+            when val = v.as_s?
+              fields[columns[i].as_s] = val
+            when val = v.as_bool?
+              fields[columns[i].as_s] = val
+            end
             i += 1
           end
           @results << Result.new(name, fields)
