@@ -8,8 +8,15 @@ module InfluxDB
       def initialize(@name, @fields, @tags = Tags.new)
       end
 
-      def time
-        Time.parse_utc(@fields["time"].to_s, "%Y-%m-%dT%H:%M:%S.%6NZ")
+      def time : Time?
+        if (t = @fields["time"]?) && (ts = t.to_s)
+          case
+          when ts =~ /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z$/
+            Time.parse_utc(ts, "%Y-%m-%dT%H:%M:%S.%6NZ")
+          else
+            Time.parse_utc(ts, "%Y-%m-%dT%H:%M:%S")
+          end
+        end
       end
 
       def value
