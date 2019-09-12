@@ -9,7 +9,7 @@ module InfluxDB
       end
 
       def time
-        @fields["time"]
+        Time.parse_utc(@fields["time"].to_s, "%Y-%m-%dT%H:%M:%S.%6NZ")
       end
 
       def value
