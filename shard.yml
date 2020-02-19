@@ -1,5 +1,7 @@
 name: influxdb
-version: 0.2.0
+version: 0.2.1
+
+crystal: 0.33.0
 
 authors:
   - Jerome Gravel-Niquet <jeromegn@gmail.com>
